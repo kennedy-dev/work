@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 import openpyxl
 from database import db
+from flask_migrate import Migrate
 
 # Load environment variables from .env file
 load_dotenv()
@@ -49,8 +50,6 @@ login_manager = LoginManager(app)
 @app.route('/')
 def index():
     return render_template('index.html')
-
-emplate('index.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

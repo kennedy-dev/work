@@ -9,7 +9,7 @@ COPY requirements.txt .
 
 # Install the Python dependencies
 RUN python -m venv dias
-RUN /app/dias/bin/pip install --no-cache-dir --upgrade pip
+RUN /app/dias/bin/pip install --no-cache-dir --upgrade pip setuptools
 RUN /app/dias/bin/pip install --no-cache-dir -r requirements.txt
 
 # Add pip-autoremove and clean up unused dependencies
@@ -33,4 +33,4 @@ RUN /app/dias/bin/python -m flask db upgrade
 EXPOSE 8081
 
 # Start the application with Gunicorn
-CMD ["/app/dias/bin/gunicorn", "-c", "gunicorn.conf", "app:app"]
+CMD ["/app/dias/bin/gunicorn", "-c", "gunicorn.conf.py", "app:app"]
