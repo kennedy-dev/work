@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sublima">
+    <style>
+        body {
+            font-family: 'Sublima', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-update {
+            background-color: #008CBA;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .logout-btn {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('logout') }}" class="btn logout-btn">Logout</a>
+        {% endif %}
+        <h2>Users and Permissions</h2>
+        <table class="table">
+            <tr>
+                <th>Username</th>
+                <th>Permissions</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.permissions }}</td>
+                <td>
+                    <form method="post" action="/admin/update-permissions">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <select name="new_role">
+                            <option value="normal" {% if user.permissions == 'normal' %}selected{% endif %}>Normal</option>
+                            <option value="admin" {% if user.permissions == 'admin' %}selected{% endif %}>Admin</option>
+                            <option value="superuser" {% if user.permissions == 'superuser' %}selected{% endif %}>Superuser</option>
+                        </select>
+					<td><button type="submit" class="btn btn-update">Update</button></td>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2>Twilio Credentials</h2>
+        <table class="table">
+            <tr>
+                <th>Account SID</th>
+                <th>Auth Token</th>
+                <th>Twilio Number</th>
+            </tr>
+            <tr>
+                <td>{{ twilio_credentials.account_sid }}</td>
+                <td>{{ twilio_credentials.auth_token }}</td>
+                <td>{{ twilio_credentials.twilio_number }}</td>
+            </tr>
+        </table>
+         
+         <h2>Update Twilio Credentials</h2>
+		 <form method="post" action="/admin/update-twilio-credentials">
+		 	<tr>
+				<th>Account SID</th>
+                <th>Auth Token</th>
+                <th>Twilio Number</th>
+                <th>Action</th>
+			</tr>
+			<tr>
+				<td><input type="text" name="account_sid" placeholder="New Account SID" required></td>
+				<td><input type="text" name="auth_token" placeholder="New Auth Token" required></td>
+				<td><input type="text" name="twilio_number" placeholder="New Twilio Number" required></td>
+			    <td><button type="submit" class="btn btn-update">Update</button></td>
+			</tr>
+		 </form>
+	</div>
+</body>

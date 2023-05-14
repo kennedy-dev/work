@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Citizen Contact Information</title>
+    <link href="https://fonts.googleapis.com/css?family=Sublima&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sublima', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .logout-button {
+            display: inline-block;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+            float: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            white-space: nowrap; /* Prevent table cells from wrapping */
+            overflow: hidden; /* Hide any overflowing content */
+            text-overflow: ellipsis; /* Display ellipsis (...) for overflowing content */
+        }
+
+        .download-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-left">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            {% endif %}
+        </div>
+        <h1>Citizen Contact Data</h1>
+
+        <h2>Contact Data</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>Passport Number</th>
+                        <th>Gender</th>
+                        <th>Location</th>
+                        <th>Household Size</th>
+                        <th>Next of Kin</th>
+                        <th>Next of Kin Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in contacts %}
+                        <tr>
+                            <td>{{ contact.name }}</td>
+                            <td>{{ contact.phone_number }}</td>
+                            <td>{{ contact.passport_number }}</td>
+                            <td>{{ contact.gender }}</td>
+                            <td>{{ contact.location }}</td>
+                            <td>{{ contact.household_size }}</td>
+                            <td>{{ contact.next_of_kin }}</td>
+                            <td>{{ contact.next_of_kin_contact }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{{ url_for('download_contacts') }}" class="download-button">Download as Excel</a>
+    </div>
+</body>
+</html>

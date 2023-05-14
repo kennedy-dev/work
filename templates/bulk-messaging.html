@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bulk Messaging</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sublima">
+    <style>
+        body {
+            font-family: 'Sublima', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .search-group input[type="text"] {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function toggleSelectAll(selectId, checkboxId) {
+            var selectElement = document.getElementById(selectId);
+            var checkboxElement = document.getElementById(checkboxId);
+            
+            if (checkboxElement.checked) {
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    selectElement.options[i].selected = true;
+                }
+            } else {
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    selectElement.options[i].selected = false;
+                }
+            }
+        }
+        
+        function searchContacts() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("search-input");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("contacts-table");
+            tr = table.getElementsByTagName("tr");
+            
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; // Assuming the name is in the first column
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        
+        function showPreview() {
+            document.getElementById("compose-section").style.display = "none";
+            document.getElementById("preview-section").style.display = "block";
+        }
+        
+        function goBack() {
+            document.getElementById("compose-section").style.display = "block";
+            document.getElementById("preview-section").style.display = "none";
+        }
+    </script>
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Bulk Messaging</h1>
+        <form method="post" action="/bulk-messaging">
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <input type="text" name="message" id="message" required>
+            </div>
+            <div class="form-group">
+                <div class="search-group">
+                    <label for="contacts">Contacts:</label>
+                    <input type="text" id="search-input" onkeyup="searchContacts()" placeholder="Search...">
+                </div>
+                <input type="checkbox" id="select-all" onclick="toggleSelectAll('contacts', 'select-all')"> Select All
+                <select name="contacts" id="contacts" multiple>
+                    <tbody id="contacts-table">
+                        {% for contact in contacts %}
+                        <option value="{{ contact.id }}" {% if filter_field and filter_value == contact[filter_field] %}selected{% endif %}>{{ contact.name }}</option>
+                        {% endfor %}
+                    </tbody>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Submit</button>
+                <button type="button" class="btn" onclick="showPreview()">Preview</button>
+            </div>
+        </form>
+        <div id="preview-section" style="display: none;">
+            <h2>Preview</h2>
+            <button type="button" class="btn" onclick="goBack()">Back</button>
+            <button type="submit" class="btn">Submit</button>
+            <div class="preview-container">
+                <h3>Message:</h3>
+                <p>{{ message }}</p>
+                <h3>Contacts:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <!-- Add more columns for other contact fields -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in contacts %}
+                        <tr>
+                            <td>{{ contact.name }}</td>
+                            <td>{{ contact.phone_number }}</td>
+                            <!-- Add more columns for other contact fields -->
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
